@@ -1,0 +1,68 @@
+* {
+    font-family: 'Roboto', sans-serif;
+    background-color: hsl(250, 24%, 19%);
+    color: #ccc;
+    scrollbar-width: none; /*firefox support */    
+}
+
+img {
+    display: none;
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: -webkit-optimize-contrast;
+}
+
+html {
+    height: 100%;
+}
+
+/* body {
+    background: #E1FCFE;
+    background: -webkit-gradient(linear, 0%, 0%, 0%, 100%, from(rgba(225,252,254,1)),
+    to(#96F6FE));
+    background: -moz-linear-gradient(top, rgba(225,252,254,1) 0%, 
+    rgba(150,246,255,1) 100%);
+    overflow: hidden;
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: -webkit-optimize-contrast;
+} */
+
+#game_window {
+    width: 960px;
+    max-width: 960px;
+    height: 540px;
+    max-height: 540px;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    bottom: 50%;
+    transform: translate(-50%, -50%);
+    background: red;
+}
+
+#canvas1 {
+    width: 960px;
+    height: 540px;
+    background: #E1FCFE;
+    background: -webkit-gradient(linear, 0%, 0%, 0%, 100%, from(rgba(225,252,254,1)),
+    to(#96F6FE));
+    background: -moz-linear-gradient(top, rgba(225,252,254,1) 0%, 
+    rgba(150,246,255,1) 100%);
+    overflow: hidden;
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: -webkit-optimize-contrast;
+}
+
+.flipH {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
