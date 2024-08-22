@@ -24,6 +24,8 @@ export class Rosa {
         //this.maxPositionInWater = this.y;
         this.direction = 1;
         this.floating = 1; // Affected by waves
+        this.reactionTime = 0.4;
+        this.resignTime = 1.0;
         this.onLand = 0;
         this.speed = 40;
         this.heldItem = null;

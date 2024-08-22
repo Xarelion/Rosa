@@ -82,39 +82,65 @@ export class Moving extends State {
         super('Moving');
         this.rosa = rosa;
         this.target = null;
+        this.timer = 0;
+        this.reactionTimer = 0;
+        this.hasReacted = false;
     }
     enter(){
         console.log('moving');
-        this.rosa.setAnimation(9, 9);
-        this.rosa.floating = 0;
-        if (this.rosa.heldItem){ 
-            this.rosa.heldItem.held = false;
-            this.rosa.heldItem = null;
-        }
+        this.timer = 0;
+        this.reactionTimer = 0;
+        this.hasReacted = false;
+        this.distance = 100;
     }
     handleInput(input, deltaTime){
         // if (input.activeObject) {
         //     this.rosa.target = input.activeObject;
         // }
         if (this.rosa.target){
-            let direction = {x:(this.rosa.target.x - this.rosa.x), y:(this.rosa.target.y - this.rosa.y)};
-            let distance = Math.sqrt(direction.x * direction.x + direction.y * direction.y);
-            if (distance <= 10 ){
-                console.log(this.rosa.target.active)
-                if (!this.rosa.target.active){
-                    this.rosa.setState(states.surface);
-                    this.rosa.heldItem = this.rosa.target;
-                    this.rosa.heldItem.held = true;
-                    this.rosa.target = null;
+            if (!this.hasReacted){
+                if (this.reactionTimer > this.rosa.reactionTime){
+                    this.rosa.setAnimation(8, 14, 5);
+                    this.rosa.floating = 0;
+                    if (this.rosa.heldItem){ 
+                        this.rosa.heldItem.held = false;
+                        this.rosa.heldItem = null;
+                    }
+                    this.hasReacted = true;
                 }
+                this.reactionTimer += deltaTime/1000;
             } else {
-                this.rosa.direction = Math.sign(direction.x)*1;
-                let directionNorm = {x: (direction.x / distance), y: (direction.y / distance)};
-                this.rosa.x += directionNorm.x * this.rosa.speed * (deltaTime/1000);
-                this.rosa.y += directionNorm.y*this.rosa.speed*(deltaTime/1000);
-                this.rosa.y =  Math.max(this.rosa.y, this.rosa.maxPositionInWater());
+                if (this.timer > this.rosa.resignTime){
+                    this.rosa.setState(states.surface);
+                    this.rosa.heldItem = null;
+                    this.rosa.target.active = true;
+                    this.rosa.target = null;
+                } else {
+                    let direction = {x:(this.rosa.target.x - this.rosa.x), y:(this.rosa.target.y - this.rosa.y)};
+                    let distance = Math.sqrt(direction.x * direction.x + direction.y * direction.y);
+                    if (Math.abs(distance - this.distance) <= 0.05){
+                        this.timer += deltaTime/1000;
+                    }
+                    this.distance = distance;
+                    if (distance <= 10 ){
+                        if (!this.rosa.target.active){
+                            this.rosa.setState(states.surface);
+                            this.rosa.heldItem = this.rosa.target;
+                            this.rosa.heldItem.held = true;
+                            this.rosa.target = null;
+                        }
+                    } else {
+                        this.rosa.direction = Math.sign(direction.x)*1;
+                        let directionNorm = {x: (direction.x / distance), y: (direction.y / distance)};
+                        this.rosa.x += directionNorm.x * this.rosa.speed * (deltaTime/1000);
+                        this.rosa.y += directionNorm.y*this.rosa.speed*(deltaTime/1000);
+                        this.rosa.y =  Math.max(this.rosa.y, this.rosa.maxPositionInWater());
+                    }
+                }
             }
         } else {
+            this.timer = 0;
+            this.reactionTimer = 0;
             this.rosa.setState(states.idle);
         }
     }
@@ -267,7 +293,6 @@ export class Spinning extends State {
     }
     handleInput(input, deltaTime){
         if (this.transitionIn){
-            console.log("t in")
             if (this.count >= this.transition.length){
                 this.transitionIn = false;
                 this.transitionOut = false;
@@ -276,7 +301,6 @@ export class Spinning extends State {
                 this.idleTimeBeforeAction = (14 / this.fps)*4 + 1.7;
                 this.idleTimer = 0
                 this.rosa.setAnimation(24, 37, this.fps);
-                console.log("t in done")
             } else {
                 if (this.idleTimer >= this.idleTimeBeforeAction){
                     this.rosa.setAnimation(this.transition[this.count]);
